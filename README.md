@@ -7,3 +7,5 @@ Proof of concept implementation of P2P chat using WebRTC on Scala.
 - [Scala Cats Effect](https://typelevel.org/cats-effect/)
 - [FS2](https://fs2.io/)
 - [Calico](https://www.armanbilge.com/calico)
+- [modern-normalize](https://github.com/sindresorhus/modern-normalize)
+- [sakura](https://oxal.org/projects/sakura/)
