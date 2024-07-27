@@ -7,7 +7,12 @@ lazy val root = project
     name := "scala-webrtc-chat",
     version := "0.1.0-SNAPSHOT",
     scalaVersion := scala3Version,
-    scalacOptions += "-Wnonunit-statement",
+    scalacOptions ++= Seq(
+      "-Wnonunit-statement",
+      "-feature",
+      "-deprecation",
+      "-unchecked"
+    ),
 
     // Tell Scala.js that this is an application with a main method
     scalaJSUseMainModuleInitializer := true,
@@ -31,8 +36,10 @@ buildDocs := ({
   IO.copyFile(html, docs)
 
   // Copy JS and JS.map from target to docs
-  val js = (target.value / s"scala-$scala3Version" / "scala-webrtc-chat-opt" / "main.js")
-  val jsMap = (target.value / s"scala-$scala3Version" / "scala-webrtc-chat-opt" / "main.js.map")
+  val js =
+    (target.value / s"scala-$scala3Version" / "scala-webrtc-chat-opt" / "main.js")
+  val jsMap =
+    (target.value / s"scala-$scala3Version" / "scala-webrtc-chat-opt" / "main.js.map")
   val docsJS = (baseDirectory.value / "docs" / "main.js")
   val docsJSMap = (baseDirectory.value / "docs" / "main.js.map")
   IO.copyFile(js, docsJS)

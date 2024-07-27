@@ -15,14 +15,22 @@ object ScalaWebRTCChat extends IOWebApp:
     for
       title <- SignallingRef[IO].of("Scala WebRTC Chat").toResource
       name <- SignallingRef[IO].of("World").toResource
-    yield (title, name)
+      testMessage1 <- SignallingRef[IO]
+        .of(Message.ReceivedMessage("This is my message."))
+        .toResource
+      testMessage2 <- SignallingRef[IO]
+        .of(Message.SentMessage("This is your message."))
+        .toResource
+      messages <- SignallingRef[IO]
+        .of(List(testMessage1, testMessage2))
+        .toResource
+    yield (title, name, messages)
 
   def render: Resource[IO, HtmlElement[IO]] =
-    resource.flatMap { (title, name) =>
+    resource.flatMap { (title, name, messages) =>
       div(
         Header.component(title),
-        OpponentChatbox.component(Signal.constant("This is my choxtbox.")),
-        UserChatbox.component(Signal.constant("This is your chatbox.")),
+        ChatList.component(messages),
         label("Your name: "),
         input.withSelf { self =>
           (
