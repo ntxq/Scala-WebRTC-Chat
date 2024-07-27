@@ -11,9 +11,18 @@ import fs2.concurrent.*
 import fs2.dom.*
 
 object ScalaWebRTCChat extends IOWebApp:
+  def resource =
+    for
+      title <- SignallingRef[IO].of("Scala WebRTC Chat").toResource
+      name <- SignallingRef[IO].of("World").toResource
+    yield (title, name)
+
   def render: Resource[IO, HtmlElement[IO]] =
-    SignallingRef[IO].of("world").toResource.flatMap { name =>
+    resource.flatMap { (title, name) =>
       div(
+        Header.component(title),
+        OpponentChatbox.component(Signal.constant("This is my choxtbox.")),
+        UserChatbox.component(Signal.constant("This is your chatbox.")),
         label("Your name: "),
         input.withSelf { self =>
           (
@@ -23,7 +32,7 @@ object ScalaWebRTCChat extends IOWebApp:
         },
         span(
           " Hello, ",
-          name.map(_.toUpperCase)
+          name
         )
       )
     }
