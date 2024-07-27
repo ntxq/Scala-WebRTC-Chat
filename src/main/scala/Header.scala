@@ -11,13 +11,8 @@ import fs2.concurrent.*
 import fs2.dom.*
 
 object Header:
-  def component(title: Signal[IO, String]): Resource[IO, HtmlElement[IO]] =
-    headerTag(
-      styleAttr := "display: flex; justify-content: space-between; align-items: center;",
-      h1(title),
-      button(
-        styleAttr := "margin: 30px 0 15px 0;",
-        `type` := "button",
-        "Connect"
-      )
-    )
+  def component(title: Signal[IO, String]): Resource[IO, HtmlElement[IO]] = headerTag(
+    styleAttr := "display: flex; justify-content: space-between; align-items: center;",
+    h1(title),
+    button(styleAttr := "margin: 30px 0 15px 0;", `type` := "button", "Connect")
+  )

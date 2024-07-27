@@ -12,9 +12,6 @@ import fs2.concurrent.*
 import fs2.dom.*
 
 object ChatList:
-  def component(
-      messages: Signal[IO, List[SignallingRef[IO, Message]]]
-  ): Resource[IO, HtmlElement[IO]] =
-    div(
-      children <-- messages.map(_.traverse(Chatbox.component))
-    )
+  def component(messages: Signal[IO, List[Signal[IO, Message]]]): Resource[IO, HtmlElement[IO]] = div(
+    children <-- messages.map(_.reverse.traverse(Chatbox.component))
+  )
