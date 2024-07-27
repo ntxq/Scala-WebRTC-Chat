@@ -23,7 +23,7 @@ lazy val root = project
 lazy val buildDocs = taskKey[Unit]("Build the output to the docs directory")
 
 buildDocs := ({
-  (Compile / compile).value
+  (Compile / fullLinkJS).value
 
   // Copy HTML from resources to docs
   val html = (baseDirectory.value / "src" / "main" / "resources" / "index.html")
