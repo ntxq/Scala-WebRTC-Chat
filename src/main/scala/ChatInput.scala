@@ -12,7 +12,7 @@ import fs2.dom.*
 
 object ChatInput:
   def component(messages: SignallingRef[IO, List[Signal[IO, Message]]]): Resource[IO, HtmlElement[IO]] =
-    (input(placeholder := "Message")).flatMap { msgInput =>
+    (input(styleAttr := "width: 90%;", placeholder := "Message")).flatMap { msgInput =>
       form(
         onSubmit -->
           (_.foreach(ev =>
@@ -27,7 +27,6 @@ object ChatInput:
               ) >> ev.preventDefault
           )),
         msgInput,
-        button(`type` := "submit", "Send")
+        button(styleAttr := "width: 10%;", `type` := "submit", "Send")
       )
-
     }

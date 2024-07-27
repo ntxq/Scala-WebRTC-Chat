@@ -24,10 +24,10 @@ object Chatbox:
 
   def receivedChatbox(message: Signal[IO, Message]): Resource[IO, HtmlElement[IO]] = div(
     styleAttr := "background-color: #f1f1f1; border-radius: 15px; width: fit-content;",
-    p(styleAttr := "padding: 1em;", message.map(_.content))
+    p(styleAttr := "line-break: anywhere; margin-bottom: 0px; padding: 1em;", message.map(_.content))
   )
 
   def sentChatbox(message: Signal[IO, Message]): Resource[IO, HtmlElement[IO]] = div(
     styleAttr := "background-color: #1d7484; border-radius: 15px; width: fit-content; margin-left: auto;",
-    p(styleAttr := "padding: 1em; color: white;", message.map(_.content))
+    p(styleAttr := "line-break: anywhere; margin-bottom: 0px; padding: 1em; color: white;", message.map(_.content))
   )

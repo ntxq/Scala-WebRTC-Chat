@@ -13,5 +13,7 @@ import fs2.dom.*
 
 object ChatList:
   def component(messages: Signal[IO, List[Signal[IO, Message]]]): Resource[IO, HtmlElement[IO]] = div(
-    children <-- messages.map(_.reverse.traverse(Chatbox.component))
+    styleAttr :=
+      "height: 80%; overflow-y: auto; display: flex; flex-direction: column-reverse; gap: 2.5rem; padding: 2.5rem;",
+    children <-- messages.map(_.traverse(Chatbox.component))
   )
