@@ -12,21 +12,25 @@ import fs2.dom.*
 
 object ChatInput:
   def component(messages: SignallingRef[IO, List[Signal[IO, Message]]]): Resource[IO, HtmlElement[IO]] =
-    (input(styleAttr := "width: 90%;", placeholder := "Message")).flatMap { msgInput =>
-      form(
-        onSubmit -->
-          (_.foreach(ev =>
-            msgInput
-              .value
-              .get
-              .flatMap(msg =>
-                if msg.nonEmpty then
-                  messages.update(Signal.constant(Message.SentMessage(msg)) :: _) >> msgInput.value.set("")
-                else
-                  IO.unit
-              ) >> ev.preventDefault
-          )),
-        msgInput,
+    for
+      inputBox <- (input(styleAttr := "width: 90%; margin-bottom: 0px;", placeholder := "Message"))
+      onSubmitHandler =
+        (ev: Event[IO]) =>
+          for
+            msg <- inputBox.value.get
+            () <-
+              if msg.nonEmpty then
+                val signal = Signal.constant[IO, Message](Message.SentMessage(msg))
+                messages.update(signal :: _)
+              else
+                IO.unit
+            () <- inputBox.value.set("")
+            () <- ev.preventDefault
+          yield ()
+      form <- form(
+        styleAttr := "margin-bottom: 0px;",
+        onSubmit --> (_.foreach(onSubmitHandler)),
+        inputBox,
         button(styleAttr := "width: 10%;", `type` := "submit", "Send")
       )
-    }
+    yield form

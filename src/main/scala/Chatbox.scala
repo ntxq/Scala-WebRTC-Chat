@@ -12,15 +12,16 @@ import fs2.concurrent.*
 import fs2.dom.*
 
 object Chatbox:
-  def component(message: Signal[IO, Message]): Resource[IO, HtmlElement[IO]] = message
-    .get
-    .toResource
-    .flatMap {
-      case SentMessage(content) =>
-        sentChatbox(message)
-      case ReceivedMessage(content) =>
-        receivedChatbox(message)
-    }
+  def component(message: Signal[IO, Message]): Resource[IO, HtmlElement[IO]] =
+    for
+      msg <- message.get.toResource
+      chatbox <-
+        msg match
+          case SentMessage(_) =>
+            sentChatbox(message)
+          case ReceivedMessage(_) =>
+            receivedChatbox(message)
+    yield chatbox
 
   def receivedChatbox(message: Signal[IO, Message]): Resource[IO, HtmlElement[IO]] = div(
     styleAttr := "background-color: #f1f1f1; border-radius: 15px; width: fit-content;",
