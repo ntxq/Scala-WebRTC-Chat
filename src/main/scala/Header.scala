@@ -11,8 +11,13 @@ import fs2.concurrent.*
 import fs2.dom.*
 
 object Header:
-  def component(title: Signal[IO, String]): Resource[IO, HtmlElement[IO]] = headerTag(
+  def component(connect: String => IO[Unit]): Resource[IO, HtmlElement[IO]] = headerTag(
     styleAttr := "display: flex; justify-content: space-between; align-items: center;",
-    h1(title),
-    button(styleAttr := "margin: 30px 0 15px 0;", `type` := "button", "Connect")
+    h1("Scala WebRTC Chat"),
+    button(
+      styleAttr := "margin: 30px 0 15px 0;",
+      `type`    := "button",
+      onClick --> (_.foreach(_ => connect("c1d18719-358e-4110-9db0-f42083cd6675"))),
+      "Connect"
+    )
   )

@@ -11,7 +11,7 @@ import fs2.concurrent.*
 import fs2.dom.*
 
 object ChatInput:
-  def component(messages: SignallingRef[IO, List[Signal[IO, Message]]]): Resource[IO, HtmlElement[IO]] =
+  def component(onSendMessage: Message.SentMessage => IO[Unit]): Resource[IO, HtmlElement[IO]] =
     for
       inputBox <- (input(styleAttr := "width: 90%; margin-bottom: 0px;", placeholder := "Message"))
       onSubmitHandler =
@@ -20,8 +20,7 @@ object ChatInput:
             msg <- inputBox.value.get
             () <-
               if msg.nonEmpty then
-                val signal = Signal.constant[IO, Message](Message.SentMessage(msg))
-                messages.update(signal :: _)
+                onSendMessage(Message.SentMessage(msg))
               else
                 IO.unit
             () <- inputBox.value.set("")
