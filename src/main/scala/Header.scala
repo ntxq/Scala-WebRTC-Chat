@@ -12,12 +12,26 @@ import fs2.dom.*
 
 object Header:
   def component(connect: String => IO[Unit]): Resource[IO, HtmlElement[IO]] = headerTag(
-    styleAttr := "display: flex; justify-content: space-between; align-items: center;",
     h1("Scala WebRTC Chat"),
-    button(
-      styleAttr := "margin: 30px 0 15px 0;",
-      `type`    := "button",
-      onClick --> (_.foreach(_ => connect("c1d18719-358e-4110-9db0-f42083cd6675"))),
-      "Connect"
-    )
+    for
+      inputElem <- input(styleAttr := "width: 100%; margin-bottom: 10px;", placeholder := "Peer ID")
+      onSubmitHandler =
+        (ev: Event[IO]) =>
+          for
+            () <- ev.preventDefault
+            id <- inputElem.value.get
+            () <-
+              if id.nonEmpty then
+                connect(id)
+              else
+                IO.unit
+            () <- inputElem.value.set("")
+          yield ()
+      formElem <- form(
+        styleAttr := "width: 100%; display: flex; justify-content: space-between; align-items: center",
+        onSubmit --> (_.foreach(onSubmitHandler)),
+        inputElem,
+        button(styleAttr := "margin-bottom: 10px;", `type` := "submit", "Connect")
+      )
+    yield formElem
   )
